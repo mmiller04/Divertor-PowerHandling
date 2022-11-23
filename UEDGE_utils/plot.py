@@ -716,6 +716,16 @@ def getConfigText():
     tisep = (bbb.ti[bbb.ixmp,com.iysptrx]+bbb.ti[bbb.ixmp,com.iysptrx+1])/2/bbb.ev
     tesep = (bbb.te[bbb.ixmp,com.iysptrx]+bbb.te[bbb.ixmp,com.iysptrx+1])/2/bbb.ev
     txt += '\n' + r'$\bf{Separatrix}$ $n_i$ = %.2g m$^{-3}$, $n_n$ = %.2g m$^{-3}$, $T_i$ = %.3g eV, $T_e$ = %.3g eV' % (nisep, nnsep, tisep, tesep)
+    # Fall off lengths
+    niefold = nisep/np.e
+    tiefold = tisep/np.e
+    teefold = tesep/np.e
+    from scipy.interpolate import interp1d
+    lambda_n = interp1d(bbb.ni[bbb.ixmp,:,0],com.yyc*1e3)(niefold)
+    lambda_ti = interp1d(bbb.ti[bbb.ixmp,:]/bbb.ev,com.yyc*1e3)(tiefold)
+    lambda_te = interp1d(bbb.te[bbb.ixmp,:]/bbb.ev,com.yyc*1e3)(teefold)
+
+    txt += '\n' + r'$\bf{Fall\ off\ lengths}$ $\lambda_{n}$ = %.2g mm, $\lambda_{T_{e}}$ = %.2g mm, $\lambda_{T_{i}}$ = %.2g mm' % (lambda_n, lambda_ti, lambda_te)
     # Corner neutral pressure
     txt += '\n' + r'$\bf{Outer\ PF\ corner\ p_n}$ %.3g Pa' % (bbb.ng[:,:,0]*bbb.ti)[com.nx,1]
     # Power sharing
